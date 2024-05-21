@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>酒店推荐系统</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://cdn.staticfile.org/twitter-bootstrap/4.3.1/css/bootstrap.min.css">
+    <script src="https://cdn.staticfile.org/jquery/3.2.1/jquery.min.js"></script>
+    <script src="https://cdn.staticfile.org/popper.js/1.15.0/umd/popper.min.js"></script>
+    <script src="https://cdn.staticfile.org/twitter-bootstrap/4.3.1/js/bootstrap.min.js"></script>
+    <script src="https://cdn.staticfile.org/echarts/4.3.0/echarts.min.js"></script>
+</head>
+<body>
+<div class="container" id="app">
+
+
+    <div class="jumbotron" style="margin-top: 200px">
+
+        <h1 class="display-4">贴吧爬取!</h1>
+        <p class="lead">搜索示例：同济大学</p>
+
+        <hr class="my-4">
+
+        <div class="row">
+            <input class="col" placeholder="请输入搜索关键词 例: 同济大学" v-model="keyword">
+            <input class="col" placeholder="请输入搜索页数: 例: 5" v-model="page_input">
+            <button class="col btn btn-primary" @click="justdoit">提交</button>
+
+        </div>
+
+    </div>
+
+</div>
+<div class="container" id="douyin">
+
+
+    <div class="jumbotron" style="margin-top: 200px">
+
+        <h1 class="display-4">抖音爬取!</h1>
+        <p class="lead">搜索示例：同济大学</p>
+
+        <hr class="my-4">
+
+        <div class="row">
+            <input class="col" placeholder="请输入搜索关键词 例: 同济大学" v-model="keyword2">
+            <input class="col" placeholder="请输入搜索视频数: 例: 5" v-model="page_input2">
+            <button class="col btn btn-primary" @click="claw">提交</button>
+
+        </div>
+
+    </div>
+
+</div>
+</body>
+</html>
+<script src="https://cdn.staticfile.org/vue/2.2.2/vue.min.js"></script>
+<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+<script>
+    var vm = new Vue({
+        el: '#app',
+        data: {
+            keyword: "",
+            page_input: "",
+
+        },
+        created() {
+        },
+        methods: {
+            justdoit() {
+                alert("爬取开始")
+                axios.post('/run/main/', {
+                    keyword: this.keyword,
+                    page: this.page_input,
+                }).then(response => {
+                    if (response.data['code'] == 200) {
+                        alert("爬取成功,请查看 贴吧数据 模块")
+
+
+                    } else if (response.data['code'] == 444) {
+                        alert("请求异常/可能是网络原因")
+                    }
+                }).catch(error => {
+                    console.log(error)
+                    alert("请求异常")
+                })
+            }
+        }
+
+    })
+     var vm2 = new Vue({
+        el: '#douyin',
+        data: {
+            keyword2: "",
+            page_input2: "",
+
+        },
+        created() {
+        },
+        methods: {
+            claw() {
+                alert("爬取开始")
+                axios.post('/run/douyin/', {
+                    keyword: this.keyword2,
+                    page: this.page_input2,
+                }).then(response => {
+                    if (response.data['code'] == 200) {
+                        alert("爬取成功,请查看抖音数据 模块")
+
+
+                    } else if (response.data['code'] == 444) {
+                        alert("请求异常/可能是网络原因")
+                    }
+                }).catch(error => {
+                    console.log(error)
+                    alert("请求异常")
+                })
+            }
+        }
+
+    })
+</script>

@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script src="https://cdn.staticfile.org/echarts/4.3.0/echarts.min.js"></script>
+    <script src="https://cdn.staticfile.org/jquery/2.2.4/jquery.min.js"></script>
+
+</head>
+<body>
+
+<div id="main" style="width: 1800px;height:1300px;margin-left: 150px"></div>
+
+</body>
+</html>
+
+<script src="/static/js/echarts-wordcloud.min.js"></script>
+<script type="text/javascript">
+    $.ajax({
+        url: "/api/ciyun",
+        type: 'GET',
+        async: false,
+        success: function (Response) {
+
+            var myChart = echarts.init(document.getElementById('main'));
+            JosnList = Response.res_list;
+            option = {
+                tooltip: {
+                    show: true,
+                },
+                series: [
+                    {
+                        type: 'wordCloud',
+                        size: ['9%', '99%'],
+                        sizeRange: [56, 200],
+                        //textRotation: [0, 45, 90, -45],
+                        rotationRange: [-45, 90],
+                        shape: 'circle',
+                        textPadding: 0,
+                        width: '80%',
+                        // 画布高
+                        height: '80%',
+                        autoSize: {
+                            enable: true,
+                            minSize: 6,
+                        },
+                        textStyle: {
+                            normal: {
+                                color: function () {
+                                    return (
+                                        'rgb(' +
+                                        [Math.round(Math.random() * 256), Math.round(Math.random() * 256), Math.round(Math.random() * 256)].join(
+                                            ','
+                                        ) +
+                                        ')'
+                                    );
+                                },
+                            },
+                            emphasis: {
+                                shadowBlur: 2,
+                                shadowColor: '#333',
+                            },
+                        },
+                        data: JosnList,
+                    },
+                ],
+            };
+            myChart.setOption(option);
+
+        }
+    });
+
+
+</script>

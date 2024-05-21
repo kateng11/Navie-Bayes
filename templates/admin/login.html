@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+{% load i18n static simpletags %}
+{% get_current_language as LANGUAGE_CODE %}{% get_current_language_bidi as LANGUAGE_BIDI %}
+<html lang="{{ LANGUAGE_CODE|default:"en-us" }}" {% if LANGUAGE_BIDI %}dir="rtl"{% endif %}>
+<head>
+    <meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no"/>
+    <meta name="apple-mobile-web-app-capable" content="yes"/>
+    <meta name="apple-mobile-web-app-status-bar-style" content="black"/>
+    <meta name="apple-touch-fullscreen" content="yes"/>
+    <meta name="format-detection" content="email=no"/>
+    <meta name="wap-font-scale" content="no"/>
+    <meta name="viewport" content="user-scalable=no, width=device-width"/>
+    <meta content="telephone=no" name="format-detection"/>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+
+    {% block title %}
+        <title>{{ site_title }}-{% trans 'Log in' %}</title>
+    {% endblock %}
+    <link href="/static/login/css/ax.css" rel="stylesheet" type="text/css">
+    <link href="/static/login/css/ax-response.css" rel="stylesheet" type="text/css">
+    <link href="/static/login/css/main.css" rel="stylesheet" type="text/css">
+</head>
+
+<body class="ax-align-origin">
+
+
+<div class="login ax-shadow-cloud ax-radius-md login-main">
+    <div class="ax-row ax-radius-md ax-split">
+        <div class="ax-col ax-col-14 ax-radius-left ax-radius-md cover"></div>
+        <div class="ax-col ax-col-10">
+            <div class="core">
+
+                <div class="ax-break"></div>
+                {% block header %}
+                    <h2 style="text-align: center">
+                        <div>{{ site_header }}</div>
+                    </h2>
+                {% endblock %}
+
+                <div class="ax-tab" axTab>
+
+                    <ul class="ax-row ax-tab-nav ax-menu-tab">
+                        <li class="ax-col"></li>
+                    </ul>
+
+                    <ul class="ax-tab-content">
+                        <li>
+                            {% block form %}
+                                <form action="{{ app_path }}" method="post" id="login-form">
+                                    {% csrf_token %}
+
+                                    <div class="ax-break"></div>
+                                    <div class="ax-break ax-hide-tel"></div>
+
+                                    <div class="ax-form-group">
+                                        <div class="ax-flex-row">
+                                            <div class="ax-form-con">
+                                                <div class="ax-form-input"><span class="ax-pos-left" style="width: 2.4rem;">
+                                                    <i class="ax-iconfont ax-icon-me-f"></i></span>
+                                                    <input name="username" value="admin" placeholder="输入登录名称"
+                                                           type="text" v-model="username">
+                                                    <span class="ax-pos-right">
+                                                        <a href="###" class="ax-iconfont ax-icon-close ax-val-none"></a>
+                                                    </span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="ax-break-md"></div>
+
+                                    <div class="ax-form-group">
+                                        <div class="ax-flex-row">
+                                            <div class="ax-form-con">
+                                                <div class="ax-form-input">
+                                                    <span class="ax-pos-left" tyle="width:2.4rem;">
+                                                    <i class="ax-iconfont ax-icon-lock-f"></i></span>
+{#                                                    <input name="password" type="password" v-model="password" @keyup.enter.native="login()" placeholder="{% trans 'password' %}">#}
+                                                    <input name="password" type="password" v-model="password" @keyup.enter.native="login()" placeholder="{% trans 'password' %}">
+                                                    <span class="ax-pos-right">
+                                                        <a href="#" class="ax-iconfont ax-icon-close ax-val-none"></a>
+                                                    </span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+
+                                    <div class="ax-break-md"></div>
+
+                                    <div class="ax-form-group">
+                                        <div class="ax-flex-row">
+                                            <div class="ax-form-con">
+                                                <div class="ax-form-input">
+                                                    <div class="ax-row">
+                                                        <div class="ax-flex-block">
+                                                            <span class="ax-pos-left" style="width:2.4rem;"><i
+                                                                    class="ax-iconfont ax-icon-shield-f"></i></span>
+                                                            <input name="yzm" placeholder="输入验证码..." value=""
+                                                                   type="text"><span class="ax-pos-right">
+                                                            <a href="#" class="ax-iconfont ax-icon-close ax-val-none"></a></span>
+                                                        </div>
+                                                        <a href="#" class="ax-form-img"><img src="/static/login/images/yanzhengma.jpg"></a>
+                                                    </div>
+                                                </div>
+
+                                            </div>
+                                        </div>
+                                    </div>
+
+
+                                    <div class="ax-break-md"></div>
+                                    <div class="ax-form-group">
+                                        <div class="ax-flex-row">
+                                            <div class="ax-form-con">
+                                                <div class="ax-form-input">
+                                                    <div class="ax-row">
+                                                        <div class="ax-flex-block">
+                                                            <label class="ax-checkbox"><input name="free-agree"
+                                                                                              value="0" checked=""
+                                                                                              type="checkbox"><span>记住密码</span></label>
+                                                        </div>
+                                                        {#                                                        <a href="###" class="ax-form-txt ax-color-ignore">忘记了密码？</a>#}
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+
+                                    <div class="ax-break-md"></div>
+                                    <div class="ax-form-group">
+                                        <div class="ax-flex-row">
+                                            <div class="ax-flex-block">
+                                                <div class="ax-form-input">
+                                                    <input type="button" class="ax-btn ax-primary ax-full" @keyup.enter.native="login()"  @click="login()" value="{% trans 'Log in' %}">
+                                                </div>
+
+                                            </div>
+                                        </div>
+                                    </div>
+
+
+                                    <div class="ax-break"></div>
+                                    <div class="ax-break ax-hide-tel"></div>
+                                    <div class="ax-break ax-hide-tel"></div>
+
+                                </form>
+                            {% endblock %}
+                        </li>
+
+                    </ul>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!--正文结束-->
+
+
+{% include 'admin/includes/js-part.html' %}
+<script>
+    if (parent.callback) {
+        //如果是在子框架内就把首页刷新
+        parent.callback();
+    }
+    var loginApp = new Vue({
+        el: '.login-main',
+        data: {
+            username: '',
+            password: '',
+            loading: false
+        },
+        methods: {
+            login: function () {
+                this.loading = true;
+                if (this.username === "" || this.password === "") {
+                    {#this.$message.error("Please enter your username or password!");#}
+                    alert("请输入账号密码")
+                    this.loading = false;
+                    return;
+                }
+                this.$nextTick(function () {
+                    document.getElementById('login-form').submit();
+                });
+            }
+        }
+    });
+</script>
+
+<script src="/static/login/js/ax.min.js" type="text/javascript"></script>
+</body>
+</html>

@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script src="https://cdn.staticfile.org/echarts/4.3.0/echarts.min.js"></script>
+    <script src="https://cdn.staticfile.org/jquery/2.2.4/jquery.min.js"></script>
+
+</head>
+<body>
+<h2 style="text-align: center;margin-left: -150px">关键词分析</h2>
+<div id="bj_main" style="width: 1800px;height:1300px;margin-left: 150px"></div>
+</body>
+</html>
+
+
+<script type="text/javascript">
+
+    $.ajax({
+        url: "/api/keyword",
+        type: 'GET',
+        async: false,
+        success: function (Response) {
+            var myChart = echarts.init(document.getElementById('bj_main'));
+            let dataList = Response.res_keyword;
+            let data = [];
+// 渲染数据，并写入chart
+            dataList.map((item) => {
+                data.push({
+                    name: `${item.name}`,
+                    number: item.num,
+                    value: item.position,
+                    symbolSize: item.size,
+                    itemStyle: {
+                        normal: {
+                            color: new echarts.graphic.RadialGradient(0.5, 0.5, 1, [
+                                {
+                                    offset: 0.2,
+                                    color: 'rgba(27, 54, 72, 0.5)',
+                                },
+                                {
+                                    offset: 1,
+                                    color:'#ffffff',
+                                },
+                            ]),
+                            borderWidth: 1,
+                            borderColor: item.borderColor,
+                        },
+                    },
+                });
+            });
+            option = {
+                backgroundColor: '#ffffff',
+                xAxis: [
+                    {
+                        type: 'value',
+                        show: false,
+                        min: 0,
+                        max: 100,
+                    },
+                ],
+                yAxis: [
+                    {
+                        min: 0,
+                        show: false,
+                        max: 100,
+                    },
+                ],
+                grid: {
+                    show: false,
+                    top: 10,
+                    bottom: 10,
+                },
+                series: [
+                    {
+                        type: 'scatter',
+                        symbolSize: [215, 50],
+                        //散点形状设置symbol: 'circle’, ‘rect’, ‘roundRect’, ‘triangle’, ‘diamond’, ‘pin’, 'arrow’
+                        symbol: 'rect',
+                        label: {
+                            normal: {
+                                show: true,
+                                formatter: '{b}',
+                                color: '#fff',
+                                textStyle: {
+                                    fontSize: '20',
+                                },
+                                // 自定义label显示内容与样式
+                                formatter: (params) => {
+                                    return `{title|${params.data.name}}{nbsp|}{num|${params.data.number}}`;
+                                },
+                                rich: {
+                                    title: {
+                                        color: '#ffffff',
+                                        align: 'center',
+                                        fontSize: '20',
+                                    },
+                                    // 间距
+                                    nbsp: {
+                                        width: 20
+                                    },
+                                    num: {
+                                        color: '#ffffff',
+                                        align: 'center',
+                                        fontSize: '20',
+                                    }
+                                }
+                            },
+                        },
+                        animationDurationUpdate: 100,
+                        animationEasingUpdate: 100,
+                        animationDelay: function (inx) {
+                            // 150(数值越大延迟就越大)
+                            return inx * 150;
+                        },
+                        data: data,
+                    },
+                ],
+            };
+
+            myChart.setOption(option);
+
+        }
+    });
+
+</script>

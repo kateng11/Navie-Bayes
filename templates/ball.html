@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script src="https://cdn.staticfile.org/echarts/4.3.0/echarts.min.js"></script>
+    <script src="https://cdn.staticfile.org/jquery/2.2.4/jquery.min.js"></script>
+
+</head>
+<body>
+
+<div id="bj_main" style="width: 1800px;height:1300px;margin-left: 150px"></div>
+</body>
+</html>
+
+
+<script type="text/javascript">
+
+    $.ajax({
+        url: "/api/keyword",
+        type: 'GET',
+        async: false,
+        success: function (Response) {
+            var myChart = echarts.init(document.getElementById('bj_main'));
+
+// 随机配色1
+            const colors1 = ["#FFEE7D", "#448EF6", "#769353", "#6DB193", "#FDBE34", "#75C2F6"];
+
+// 随机配色2
+            const colors2 = ["#79DC96", "#6E7DA2", "#346473", "#B689B0", "#FFE981", "#E4F9F5"];
+
+
+            const MOCK = [
+                {
+                    name: '正面情感',
+                    data: Response.good_key
+                },
+                {
+                    name: '负面情感',
+                    data: Response.bad_key
+                },
+
+            ]
+
+
+            // 获取 Series
+            const getSeries = data => data.map((_, index) => ({
+                name: _.name,
+                data: _.data,
+                type: 'scatter',
+                symbolSize: val => {
+                    // 获取所有values
+                    const values = data.map(_ => _.data).flat().map(_ => _[2])
+                    // 获取最大值
+                    const max = Math.max(Math.max(...values))
+                    // 获取最小值
+                    const min = Math.min(...values)
+                    // 定义最大气泡
+                    const maxSize4Pin = 50
+                    // 定义最小气泡
+                    const minSize4Pin = 10
+                    // 固定套路
+                    var a = (maxSize4Pin - minSize4Pin) / (max - min);
+                    var b = maxSize4Pin - a * max;
+                    return a * val[2] + b;
+                },
+                label: {
+                    normal: {show: true, formatter: "", position: 'top',},
+                    emphasis: {show: true, formatter: param => param.data[3], position: 'top'}
+                },
+                itemStyle: {
+                    shadowBlur: 10,
+                    shadowColor: 'rgba(25, 100, 150, 0.5)',
+                    shadowOffsetY: 5,
+                    color: new echarts.graphic.RadialGradient(0.4, 0.3, 1, [
+                        {offset: 0, color: colors1[index]},
+                        {offset: 1, color: colors2[index]}
+                    ])
+                }
+            }))
+
+
+            var option = {
+                tooltip: {
+                    trigger: "item",
+                    formatter: function (params) {
+                        return params.value[3] + ":" + parseInt(params.value[1] * 1000) / 10 + "%"
+                    }
+                },
+                title: {
+                    text: "情感分析关键词",
+                    subtext: "小于0.5负面情感，大于0.5属于正面情感",
+                    left: "center"
+                },
+                legend: {
+                    right: 10,
+                    top: 5,
+                    data: MOCK.map(_ => _.name)
+                },
+                grid: {
+                    top: '20%',
+                    bottom: '10%',
+                },
+                xAxis: {
+                    name: "数量",
+                    splitLine: {
+                        lineStyle: {
+                            type: 'dashed'
+                        }
+                    }
+                },
+                yAxis: {
+                    name: "情感值",
+                    splitLine: {
+                        lineStyle: {
+                            type: 'dashed'
+                        }
+                    },
+                    scale: true
+                },
+                series: getSeries(MOCK)
+            };
+            myChart.setOption(option);
+        }
+    });
+
+</script>

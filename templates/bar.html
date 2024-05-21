@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script src="https://cdn.staticfile.org/echarts/4.3.0/echarts.min.js"></script>
+    <script src="https://cdn.staticfile.org/jquery/2.2.4/jquery.min.js"></script>
+
+</head>
+<body>
+
+<div id="bj_main" style="width: 1800px;height:1300px;margin-left: 150px"></div>
+</body>
+</html>
+
+
+<script type="text/javascript">
+$.ajax({
+    url: "/api/bardata",
+    type: 'GET',
+    async: false,
+    success: function (result) {
+        var myChart = echarts.init(document.getElementById('bj_main'));
+
+        // Extracting keyword, positive_count, and negative_count from result
+        var keywords = [];
+        var positiveCounts = [];
+        var negativeCounts = [];
+
+        result.forEach(function (item) {
+            keywords.push(item.keyword);
+            positiveCounts.push(item.positive_count);
+            negativeCounts.push(item.negative_count);
+        });
+
+        var option = {
+            color: ['#448EF6', '#FF0000'], // Blue for positive, Green for negative
+            tooltip: {
+                trigger: 'axis',
+                axisPointer: {
+                    type: 'shadow'
+                }
+            },
+            legend: {
+                data: ['正面情绪', '负面情绪']
+            },
+            xAxis: {
+                type: 'category',
+                data: keywords
+            },
+            yAxis: {
+                type: 'value'
+            },
+            series: [
+                {
+                    name: '正面情绪',
+                    type: 'bar',
+                    data: positiveCounts
+                },
+                {
+                    name: '负面情绪',
+                    type: 'bar',
+                    data: negativeCounts
+                }
+            ]
+        };
+
+        myChart.setOption(option);
+    }
+});
+
+</script>
